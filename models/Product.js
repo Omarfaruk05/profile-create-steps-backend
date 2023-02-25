@@ -1,74 +1,80 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 const { ObjectId } = mongoose.Schema.Types;
 
-const productSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Please provide a name for this product."],
-        trim: true,
-        unique: [true, "Name must be unique"],
-        minLength: [3, "Name must be at least 3 characters."],
-        maxLength: [100, "Name is too large"],
-    },
-    description: {
-        type: String,
-        required: true,
-    },
-    imageURLs: {
-        mediumImg: {
-            type: [String],
-            validate: {
-            validator: (value) => {
-                if (!value || !Array.isArray(value)) {
-                return false
-                }
-                let Ok = true;
-                value.forEach((v) => {
-                console.log(validator.isURL(v));
-                if (!validator.isURL(v)) {
-                    Ok = false;
-                }
-                });
-                return Ok;
-            },
-            message: "Provide a valid image URL",
-            },
-        },
-        largeImg: [{
-            type: [String],
-            validate: {
-            validator: (value) => {
-                if (!value || !Array.isArray(value)) {
-                return false
-                }
-                let Ok = true;
-                value.forEach((v) => {
-                console.log(validator.isURL(v));
-                if (!validator.isURL(v)) {
-                    Ok = false;
-                }
-                });
-                return Ok;
-            },
-            message: "Provide a valid image URL",
-            },
-        }],
-    },
+const productSchema = mongoose.Schema(
+  {
     category: {
-        type: String,
-        required: true,
+      type: String,
     },
-    brand: {
-        name: {
-          type: String,
-          required: true,
+    productName: {
+      type: String,
+      required: [true, "Please provide a name for this product."],
+    },
+    productImage: {
+      type: [String],
+      validate: {
+        validator: (value) => {
+          if (!value || !Array.isArray(value)) {
+            return false;
+          }
+          let allOk = true;
+          value.forEach((v) => {
+            if (!validator.isURL(v)) {
+              allOk = false;
+            }
+          });
+          return allOk;
         },
-        id: {
-          type: ObjectId,
-          required: true,
-          ref: "Brand",
+        message: "Provide a valid image URL",
+      },
+    },
+    productImageWeb: {
+      type: [String],
+      validate: {
+        validator: (value) => {
+          if (!value || !Array.isArray(value)) {
+            return false;
+          }
+          let allOk = true;
+          value.forEach((v) => {
+            if (!validator.isURL(v)) {
+              allOk = false;
+            }
+          });
+          return allOk;
         },
+        message: "Provide a valid image URL",
+      },
+    },
+    productDetails: {
+      type: Object,
+      required: true,
+    },
+    KeyFeatures: {
+      type: Object,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: [0, "Price can't be negative"],
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: [0, "Product quantity can't be negative"],
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: {
+        values: ["in-stock", "out-of-stock", "discontinued"],
+        message: "status can't be {VALUE}",
+      },
+    },
+    discription: {
+      type: String,
     },
   },
   {
@@ -76,6 +82,6 @@ const productSchema = mongoose.Schema({
   }
 );
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;

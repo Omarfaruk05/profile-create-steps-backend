@@ -1,38 +1,32 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 const { ObjectId } = mongoose.Schema.Types;
 
-const brandSchema = mongoose.Schema({
+const brandSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        trim: true,
-        required: [true, "Please provide a brnad name"],
-        maxLength: 100,
-        unique: true,
+      type: String,
+      trim: true,
+      required: [true, "Please provide a brnad name"],
+      maxLength: 100,
+      unique: true,
     },
     description: String,
-    products: [{
+    products: [
+      {
         type: ObjectId,
-        ref: "Product"
-    }],
-    suppliers: [{
-        name: String,
-        contanctNumber: String,
-        id: {
-          type: ObjectId,
-          ref: "Supplier"
-        }
-      }],
+        ref: "Product",
+      },
+    ],
     status: {
-        type: String,
-        enum: ["active", "inactive"],
-        default: "active"
-      }
-    
-    }, 
-    {
-    timestamps: true
-    }
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 const Brand = mongoose.model("Brand", brandSchema);
