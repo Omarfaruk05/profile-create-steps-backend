@@ -8,3 +8,7 @@ exports.getProductService = async (data) => {
   const result = await Product.find({ category: data });
   return result;
 };
+exports.getProductServiceById = async (id) => {
+  const result = await Product.findOne({ _id: id });
+  return result;
+};
