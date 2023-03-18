@@ -1,7 +1,7 @@
 const {
-  addProductService,
-  getProductService,
+  getProductForHomeService,
   getProductServiceById,
+  getStockService,
 } = require("../services/product.service");
 
 // add product
@@ -26,8 +26,27 @@ exports.addProduct = async (req, res) => {
 exports.getProduct = async (req, res) => {
   try {
     const { category } = req.params;
+    const products = await getProductForHomeService(category);
+
+    res.status(200).json({
+      status: true,
+      message: "Products get succesfull",
+      data: products,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: "Products doesn't get.",
+      error: error.message,
+    });
+  }
+};
+
+exports.getStock = async (req, res) => {
+  try {
+    const { category } = req.params;
     console.l;
-    const products = await getProductService(category);
+    const products = await getStockService(category);
 
     res.status(200).json({
       status: true,
