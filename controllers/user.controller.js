@@ -1,5 +1,8 @@
-const { signupService, findUserByEmail } = require("../services/user.service");
-const { genetateToken } = require("../utils/token");
+const {
+  signupService,
+  loginService,
+  getMeService,
+} = require("../services/user.service");
 const bcrypt = require("bcrypt");
 
 exports.singup = async (req, res) => {
@@ -25,41 +28,12 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(401).json({
-        status: "Fail",
-        error: "Please provide your email and password.",
-      });
-    }
-
-    const user = await findUserByEmail(email);
-
-    if (!user) {
-      return res.status(401).json({
-        status: "Fail",
-        error: "No user found. Please creat a account.",
-      });
-    }
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        status: "Fail",
-        error: "Email or password is not valid.",
-      });
-    }
-
-    const token = genetateToken(user);
-
-    user.password = undefined;
+    const result = await loginService(email, password);
 
     res.status(200).json({
       status: "Success",
       message: "login successfull.",
-      data: {
-        user,
-        token,
-      },
+      data: result,
     });
   } catch (error) {
     res.status(400).json({
@@ -71,7 +45,8 @@ exports.login = async (req, res) => {
 };
 exports.getMe = async (req, res) => {
   try {
-    const user = await findUserByEmail(req.user?.email);
+    console.log(req.headers);
+    const user = await getMeService(req.user?.id);
 
     user.password = undefined;
     res.status(200).json({

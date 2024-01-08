@@ -8,11 +8,11 @@ exports.getStockService = async (data) => {
   const result = await Product.find({ category: data }).limit();
   return result;
 };
-exports.getProductForHomeService = async (data) => {
-  const result = await Product.find({ category: data }).limit(8);
+exports.getAllProduct = async () => {
+  const result = await Product.find().limit(8);
   return result;
 };
-exports.getProductServiceById = async (id) => {
+exports.getProductById = async (id) => {
   const result = await Product.findOne({ _id: id });
   return result;
 };
