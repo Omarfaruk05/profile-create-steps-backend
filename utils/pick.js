@@ -1,4 +1,4 @@
-const pick = (obj, keys) => {
+exports.pick = (obj, keys) => {
   const findObj = {};
   for (const key of keys) {
     if (obj && Object.hasOwnProperty.call(obj, key)) {
@@ -7,5 +7,3 @@ const pick = (obj, keys) => {
   }
   return findObj;
 };
-
-export default pick;

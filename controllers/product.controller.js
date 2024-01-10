@@ -2,9 +2,9 @@ const { productFilterableFields } = require("../constants/product.constants");
 const {
   getProductById,
   addProductService,
-  getAllProduct,
+  getAllProductsService,
 } = require("../services/product.service");
-const { default: pick } = require("../utils/pick");
+const { pick } = require("../utils/pick");
 
 // add product
 exports.addProduct = async (req, res) => {
@@ -29,7 +29,7 @@ exports.addProduct = async (req, res) => {
 exports.getAllProduct = async (req, res) => {
   try {
     const filters = pick(req.query, productFilterableFields);
-    const products = await getAllProduct(filters);
+    const products = await getAllProductsService(filters);
 
     res.status(200).json({
       status: true,
