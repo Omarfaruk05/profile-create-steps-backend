@@ -12,6 +12,8 @@ exports.getStockService = async (data) => {
 exports.getAllProductsService = async (filters) => {
   const { searchTerm, limit, minPrice, maxPrice, ...filtersData } = filters;
 
+  console.log(limit);
+
   const andConditions = [];
   if (searchTerm) {
     andConditions.push({
