@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
     res.status(400).json({
       status: "Fail",
       message: "logn is not successfull.",
-      error: error.message,
+      error: error,
     });
   }
 };

@@ -15,21 +15,17 @@ exports.loginService = async (email, password) => {
   }
 
   const user = await User.findOne({ email });
+  console.log(user);
 
   if (!user) {
-    return res.status(401).json({
-      status: "Fail",
-      error: "No user found. Please creat a account.",
-    });
+    throw new error("User doesn't found!");
   }
-  const isPasswordValid = bcrypt.compare(password, user.password);
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  console.log(isPasswordValid);
 
   console.log(isPasswordValid);
   if (!isPasswordValid) {
-    return res.status(401).json({
-      status: "Fail",
-      error: "Email or password is not valid.",
-    });
+    throw new error("Password is not correct!");
   }
 
   const token = genetateToken(user);
