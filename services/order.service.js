@@ -44,7 +44,7 @@ exports.createOrderService = async (order) => {
 
   const response = await axios({
     method: "POST",
-    url: "https://sandbox.sslcommerz.com/gwprocess/v3/api.php",
+    url: process.env.sslPaymentUrl,
     data,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
@@ -53,12 +53,20 @@ exports.createOrderService = async (order) => {
 };
 
 exports.success = async (payload) => {
-  console.log("dd", payload);
   const result = await Order.findOneAndUpdate(
     { tran_id: payload },
     { paidStatus: "SUCCESS" },
     { new: true }
   );
+  return result;
+};
+exports.fail = async (payload) => {
+  const result = await Order.deleteOne({ tran_id: payload });
+  return result;
+};
+exports.cencel = async (payload) => {
+  console.log("dd", payload);
+  const result = await Order.deleteOne({ tran_id: payload });
   return result;
 };
 
@@ -67,15 +75,5 @@ exports.getAllOrderService = async (user) => {
     .populate("user")
     .populate("products");
 
-  return result;
-};
-
-exports.getStockService = async (data) => {
-  const result = await Product.find({ category: data }).limit();
-  return result;
-};
-
-exports.getProductById = async (id) => {
-  const result = await Product.findOne({ _id: id });
   return result;
 };

@@ -3,6 +3,8 @@ const {
   webhook,
   success,
   getAllOrderService,
+  fail,
+  cencel,
 } = require("../services/order.service");
 
 // create order
@@ -30,7 +32,41 @@ exports.success = async (req, res) => {
     const result = await success(data);
 
     if (result) {
-      res.redirect("http://localhost:3000/receipt");
+      res.redirect("https://heartfelt-tiramisu-5729e5.netlify.app/success");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      status: false,
+      message: "Payment doesn't Success.",
+      error: error.message,
+    });
+  }
+};
+exports.fail = async (req, res) => {
+  try {
+    const data = req.params;
+    const result = await fail(data);
+
+    if (result) {
+      res.redirect("https://heartfelt-tiramisu-5729e5.netlify.app/fail");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      status: false,
+      message: "Payment doesn't Success.",
+      error: error.message,
+    });
+  }
+};
+exports.cencel = async (req, res) => {
+  try {
+    const data = req.params;
+    const result = await cencel(data);
+
+    if (result) {
+      res.redirect("https://heartfelt-tiramisu-5729e5.netlify.app/cencel");
     }
   } catch (error) {
     console.log(error);
