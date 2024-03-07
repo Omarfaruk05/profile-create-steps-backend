@@ -1,4 +1,9 @@
-const { createOrderService, webhook } = require("../services/order.service");
+const {
+  createOrderService,
+  webhook,
+  success,
+  getAllOrderService,
+} = require("../services/order.service");
 
 // create order
 exports.createOrder = async (req, res) => {
@@ -19,21 +24,37 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-exports.webhook = async (req, res) => {
+exports.success = async (req, res) => {
   try {
-    const data = req.query;
-    console.log(data);
-    const result = await webhook(data);
+    const data = req.params;
+    const result = await success(data);
 
-    res.status(200).json({
-      status: true,
-      message: result,
-    });
+    if (result) {
+      res.redirect("http://localhost:3000/receipt");
+    }
   } catch (error) {
     console.log(error);
     res.status(400).json({
       status: false,
       message: "Payment doesn't Success.",
+      error: error.message,
+    });
+  }
+};
+
+exports.getAllOrders = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const orders = await getAllOrderService(id);
+    res.status(200).json({
+      status: true,
+      message: "Order fetched successfully.",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: "Order doesn't fetched successfully.",
       error: error.message,
     });
   }

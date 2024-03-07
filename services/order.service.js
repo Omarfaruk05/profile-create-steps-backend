@@ -12,9 +12,9 @@ exports.createOrderService = async (order) => {
     total_amount: order?.totalAmount,
     currency: "BDT",
     tran_id: tran_id,
-    success_url: "http://localhost:3000/receipt",
-    fail_url: "http://localhost:3000/fail",
-    cancel_url: "http://localhost:3030/cancel",
+    success_url: `https://e-mart-server.vercel.app/api/v1/orders/success/${tran_id}`,
+    fail_url: "https://e-mart-server.vercel.app/api/v1/fail",
+    cancel_url: "https://e-mart-server.vercel.app/api/v1/cencel",
     ipn_url: "http://localhost:3030/ipn",
     shipping_method: "Courier",
     product_name: "Computer.",
@@ -52,79 +52,29 @@ exports.createOrderService = async (order) => {
   return response.data?.redirectGatewayURL;
 };
 
-exports.webhook = async (payload) => {
-  const result = await axios({
-    method: "GET",
-    url: `https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=${payload.val_id}&store_id=${process.env.store_id}&store_passwd=${process.env.store_passwd}&formate=json`,
-  });
-
-  if (result?.data?.status === "INVALID_TRANSACTION") {
-    return "Payment failed";
-  }
-
-  const { tran_id } = result?.data;
-
-  await Order.findOneAndUpdate(
-    { tran_id },
+exports.success = async (payload) => {
+  console.log("dd", payload);
+  const result = await Order.findOneAndUpdate(
+    { tran_id: payload },
     { paidStatus: "SUCCESS" },
     { new: true }
   );
+  return result;
+};
 
-  return "Payment Success";
+exports.getAllOrderService = async (user) => {
+  const result = await Order.find({ user })
+    .populate("user")
+    .populate("products");
+
+  return result;
 };
 
 exports.getStockService = async (data) => {
   const result = await Product.find({ category: data }).limit();
   return result;
 };
-exports.getAllProductsService = async (filters) => {
-  const { searchTerm, limit, minPrice, maxPrice, ...filtersData } = filters;
 
-  const andConditions = [];
-  if (searchTerm) {
-    andConditions.push({
-      $or: productSearchableFildes.map((field) => ({
-        [field]: {
-          $regex: searchTerm,
-          $options: "i",
-        },
-      })),
-    });
-  }
-
-  if (minPrice && !maxPrice) {
-    andConditions.push({
-      $and: [{ price: { $gte: Number(minPrice) } }],
-    });
-  }
-
-  if (!minPrice && maxPrice) {
-    andConditions.push({
-      $and: [{ price: { $lte: Number(maxPrice) } }],
-    });
-  }
-
-  if (minPrice && maxPrice) {
-    andConditions.push({
-      $and: [{ price: { $gte: Number(minPrice), $lte: Number(maxPrice) } }],
-    });
-  }
-
-  if (Object.keys(filtersData).length) {
-    andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
-    });
-  }
-
-  const whereConditions =
-    andConditions.length > 0 ? { $and: andConditions } : {};
-
-  const result = await Product.find(whereConditions).limit(limit);
-
-  return result;
-};
 exports.getProductById = async (id) => {
   const result = await Product.findOne({ _id: id });
   return result;

@@ -3,7 +3,10 @@ const router = express.Router();
 
 const orderController = require("../controllers/order.controller");
 
+router.get("/:id", orderController.getAllOrders);
 router.post("/", orderController.createOrder);
-router.get("/webhook", orderController.webhook);
+router.post("/success/:tranId", orderController.success);
+// router.post("/fail/:tranId", orderController.fail);
+// router.post("/cencel/:tranId", orderController.cencel);
 
 module.exports = router;
