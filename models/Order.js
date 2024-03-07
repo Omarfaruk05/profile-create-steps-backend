@@ -1,29 +1,28 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const { ObjectId } = mongoose.Schema.Types;
 
 const orderSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      trim: true,
-      required: [true, "Please provide a brnad name"],
-      maxLength: 100,
-      unique: true,
-    },
-    orderStatus: {
-      type: String,
-      enum: ["PENDING", "COMPLETE"],
-      required: true,
-      default: "PENDING",
-    },
     products: [
       {
         type: ObjectId,
         ref: "Product",
       },
     ],
-    User: {
+    totalAmount: {
+      type: String,
+      required: true,
+    },
+    paidStatus: {
+      type: String,
+      enum: ["PENDING", "SUCCESS"],
+      default: "PENDING",
+    },
+    transectionId: {
+      type: String,
+      required: true,
+    },
+    user: {
       type: ObjectId,
       ref: "User",
     },
