@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const { genetateToken } = require("../src/utils/token");
+const { genetateToken } = require("../../utils/token");
 
 exports.signupService = async (user) => {
   const newUser = await User.create(user);
