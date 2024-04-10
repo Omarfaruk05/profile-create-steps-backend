@@ -6,11 +6,9 @@ const app = require("./app");
 const port = process.env.PORT || 5000;
 let server;
 
-console.log(process.env.DATABASE_URL);
-
 async function bootstrap() {
   try {
-    await mongoose.connect(process.env.DATABASE_URL, {
+    await mongoose.connect(process.env.PRODUCTION_DATABASE_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

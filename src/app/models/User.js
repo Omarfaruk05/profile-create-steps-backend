@@ -42,6 +42,9 @@ const userSchema = mongoose.Schema(
       type: String,
       validate: [validator.isURL, "Please provide a valid image URL."],
     },
+    address: {
+      type: String,
+    },
     role: {
       type: [String],
       enum: ["designer", "recruiter", "student"],
