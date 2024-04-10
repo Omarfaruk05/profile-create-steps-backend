@@ -2,6 +2,7 @@ const {
   signupService,
   loginService,
   getMeService,
+  updateUser,
 } = require("../services/user.service");
 const bcrypt = require("bcrypt");
 
@@ -43,9 +44,30 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+exports.updateUser = async (req, res) => {
+  try {
+    const id = req.user?.id;
+    const data = req.body;
+
+    console.log(id, data);
+    const user = await updateUser(id, data);
+
+    user.password = undefined;
+    res.status(200).json({
+      status: "Successfully Updated User.",
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Failed to update user.",
+      error: error.message,
+    });
+  }
+};
 exports.getMe = async (req, res) => {
   try {
-    console.log(req.headers);
     const user = await getMeService(req.user?.id);
 
     user.password = undefined;

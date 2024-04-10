@@ -4,7 +4,10 @@ const { genetateToken } = require("../../utils/token");
 
 exports.signupService = async (user) => {
   const newUser = await User.create(user);
-  return newUser;
+
+  const loginInfo = await this.loginService(user.email, user.password);
+  console.log(loginInfo);
+  return loginInfo;
 };
 exports.loginService = async (email, password) => {
   if (!email || !password) {
@@ -15,7 +18,6 @@ exports.loginService = async (email, password) => {
   }
 
   const user = await User.findOne({ email });
-  console.log(user);
 
   if (!user) {
     throw new error("User doesn't found!");
@@ -36,6 +38,18 @@ exports.loginService = async (email, password) => {
     user,
     token,
   };
+};
+
+exports.updateUser = async (id, data) => {
+  const user = await User.findOne({ id });
+
+  if (!user) {
+    throw new error("User doesn't found!");
+  }
+
+  const updatedUser = await User.findOneAndUpdate(id, data, { new: true });
+
+  return updatedUser;
 };
 
 exports.getMeService = async (id) => {
